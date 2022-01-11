@@ -33,7 +33,7 @@ docker run --name=mycontainer -p 8080:8080 -d node-web-app
 ```
 List of your containers:
 ```bash
-docker ps -an
+docker ps -a
 ```
 Here you go, a container named "mycontainer", exposed port "8080:8080" is there.
 If you take a look inside your container you can see your scrpt directory files as well:
