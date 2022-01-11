@@ -1,3 +1,4 @@
+![Node.js web app](thumbnail.png)
 # Dockerizing a Node.js web app
 #### Build the app’s container image
 Take a look at Dockerfile:
