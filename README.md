@@ -52,7 +52,8 @@ Via terminal:
 ```bash
 curl -i localhost:8080
 ```
-Via browser
+Via browser:
+
 After a few seconds, open your web browser to http://localhost:8080. You should see your app.
 Depends on your machine (virtualMachine) maybe you have to set PortForwarding (port:8080)
 and then visit: http://localhost:8080/
