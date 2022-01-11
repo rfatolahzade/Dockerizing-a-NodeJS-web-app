@@ -37,7 +37,7 @@ List of your containers:
 docker ps -a
 ```
 Here you go, a container named "mycontainer", exposed port "8080:8080" is there.
-If you take a look inside your container you can see your scrpt directory files as well:
+If you take a look inside your container you can see your script directory as well:
 
 ```bash
 docker exec -it mycontainer /bin/bash
@@ -55,6 +55,6 @@ curl -i localhost:8080
 ```
 Via browser:
 
-After a few seconds, open your web browser to http://localhost:8080. You should see your app.
+Open your web browser to http://localhost:8080. You should see your app.
 Depends on your machine (virtualMachine) maybe you have to set PortForwarding (port:8080)
 and then visit: http://localhost:8080/
