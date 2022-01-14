@@ -1,5 +1,13 @@
 {
+  "name": "patternify",
+  "version": "1.0.1",
+  "description": "MyUniversityProject",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "inquirer": "^8.2.0"
-  }
+  },
+  "keywords": []
 }
