@@ -4,7 +4,7 @@
   "description": "MyUniversityProject",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js localhost 8080"
+    "start": "nodemon app.js localhost 8081"
   },
   "dependencies": {
     "inquirer": "^8.2.0",
