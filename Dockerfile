@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:fermium-alpine3.15
 WORKDIR /usr/src/app
 
 COPY script/package*.json ./
