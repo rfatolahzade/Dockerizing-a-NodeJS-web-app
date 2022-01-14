@@ -1,6 +1,8 @@
 const inquirer = require('inquirer')
 const fs = require('fs')
-const app = express();
+
+var express = require('express');
+var app = express();
 
 const textQuestion = {
   type: 'input',
@@ -29,14 +31,21 @@ function checkPattern(text, pattern, batchSize) {
   return result
 }
 
-function getOcccurances(text, pattern) {
+function getOccurrences(text, pattern) {
   if (!Boolean(pattern)) {
     return console.log(`0 occurrences of pattern found in the text.`)
   }
 
-  const occurances = checkPattern(text, pattern, 4)
+  const occurrences = checkPattern(text, pattern, 4)
 
-  console.log(`${occurances} occurrences of pattern found in the text.`)
+  console.log(`${occurrences} occurrences of pattern found in the text.`)
+
+  server.close(() => {
+    console.log('server closed')
+    process.exit(0)
+
+    main()
+  })
 }
 
 function main() {
@@ -45,17 +54,16 @@ function main() {
 
     console.info('You have already provided your text in "text.txt"')
 
-    inquirer.prompt([patternQuestion]).then(answers => getOcccurances(data.toString(), answers['pattern']))
+    inquirer.prompt([patternQuestion]).then(answers => getOccurrences(data.toString(), answers['pattern']))
 
   } catch (_) {
     console.warn('There is not any text.txt file so you have to enter your text:')
 
-    inquirer.prompt([textQuestion, patternQuestion]).then(answers =>  getOcccurances(answers['text'], answers['pattern']))
+    inquirer.prompt([textQuestion, patternQuestion]).then(answers =>  getOccurrences(answers['text'], answers['pattern']))
   }
 }
 
-var listener = app.listen(8080, function () {
+var server = app.listen(8080, function () {
   main()
-  console.log("Listening on port " + listener.address().port);
 });
 
