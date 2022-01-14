@@ -68,3 +68,5 @@ Via browser:
 Open your web browser to http://localhost:8080. You should see your app.
 Depends on your machine (VirtualMachine) maybe you have to set port forwarding (port:8080)
 and then visit: http://localhost:8080/
+
+[![Try in PWD](https://raw.githubusercontent.com/play-with-docker/stacks/master/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/rfinland/Dockerizing-a-NodeJS-web-app/main/Dockerfile)
