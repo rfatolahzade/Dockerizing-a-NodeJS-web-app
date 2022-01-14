@@ -1,5 +1,6 @@
 const inquirer = require('inquirer')
 const fs = require('fs')
+const app = express();
 
 const textQuestion = {
   type: 'input',
@@ -39,9 +40,6 @@ function getOcccurances(text, pattern) {
 }
 
 function main() {
-  const text = null
-  const pattern = null
-
   try {
     const data = fs.readFileSync('text.txt', 'utf8')
 
@@ -56,4 +54,8 @@ function main() {
   }
 }
 
-main()
+var listener = app.listen(8080, function () {
+  main()
+  console.log("Listening on port " + listener.address().port);
+});
+

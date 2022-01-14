@@ -4,10 +4,14 @@
   "description": "MyUniversityProject",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js localhost 8080"
   },
   "dependencies": {
-    "inquirer": "^8.2.0"
+    "inquirer": "^8.2.0",
+    "express": "~4.16.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   },
   "keywords": []
 }
