@@ -4,7 +4,7 @@
   "description": "MyUniversityProject",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js localhost 8000"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
