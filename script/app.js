@@ -1,69 +1,31 @@
-const inquirer = require('inquirer')
-const fs = require('fs')
-
-var express = require('express');
+var express = require("express");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
+var usersRouter = require("./routes/users");
 var app = express();
 
-const textQuestion = {
-  type: 'input',
-  name: 'text',
-  message: 'Please enter the text:'
-}
 
-const patternQuestion = {
-  type: 'input',
-  name: 'pattern',
-  message: 'Please enter the pattern:'
-}
-
-function checkPattern(text, pattern, batchSize) {
-  const regexp = new RegExp(pattern, 'gi')
-  const allWords = text.split(' ')
-  const batches = []
-  let result = 0
-
-  while (allWords.length) {
-    batches.push(allWords.splice(0, batchSize))
-  }
-
-  batches.map(batch => result += batch.join(' ').match(regexp)?.length || 0)
-
-  return result
-}
-
-function getOccurrences(text, pattern) {
-  if (!Boolean(pattern)) {
-    return console.log(`0 occurrences of pattern found in the text.`)
-  }
-
-  const occurrences = checkPattern(text, pattern, 4)
-
-  console.log(`${occurrences} occurrences of pattern found in the text.`)
-
-  server.close(() => {
-    console.log('server closed')
-    process.exit(0)
-
-    main()
-  })
-}
-
-function main() {
-  try {
-    const data = fs.readFileSync('text.txt', 'utf8')
-
-    console.info('You have already provided your text in "text.txt"')
-
-    inquirer.prompt([patternQuestion]).then(answers => getOccurrences(data.toString(), answers['pattern']))
-
-  } catch (_) {
-    console.warn('There is not any text.txt file so you have to enter your text:')
-
-    inquirer.prompt([textQuestion, patternQuestion]).then(answers =>  getOccurrences(answers['text'], answers['pattern']))
-  }
-}
-
-var server = app.listen(8081, function () {
-  main()
+app.get("/Exception", function mainHandler(req, res) {
+    throw new Error("An exception occured!");
 });
 
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
+
+
+app.use("/users", usersRouter);
+app.get("/Hello", function rootHandler(req, res) {
+    res.end("Hello world!!");
+});
+
+app.use("/POW", function (req, res, next) {
+    res.send(Math.pow(req.query.a, req.query.b).toString());
+});
+
+var listener = app.listen(8080, function () {
+    console.log("Listening on port " + listener.address().port);
+});

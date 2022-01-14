@@ -1,0 +1,50 @@
+.main {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+form {
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    width: 100px;
+    font-weight: bold;
+}
+
+button {
+    margin-top: 2rem;
+    background-color: lightblue;
+    padding: 10px 5px;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 5px;
+    width: 300px;
+}
+
+input, textarea {
+    width: 200px;
+    margin-bottom: 1rem;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+input {
+    height: 25px;
+}
+
+

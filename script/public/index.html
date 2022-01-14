@@ -1,60 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Omega</title>
-    <script src="axios.js"></script>
-    <script>
-      function POW() {
-        let num1 = document.getElementById("Num1").value;
-        let num2 = document.getElementById("Num2").value;
-        axios.get("/POW?a=" + num1 + "&b=" + num2).then((result) => {
-          let resultInput = document.getElementById("Result");
-          resultInput.value = result.data;
-        });
-      }
-    </script>
-  </head>
-  <body>
-    <div>
-      <form style="margin-left: 40%; margin-top: 10%;">
-        <div>
-          <label style="width: 100px; display: inline-block;">Num1</label>
-          <input
-            id="Num1"
-            maxlength="11"
-            style="margin: 10px; width: 200px; height: 30px;"
-          />
-        </div>
-        <div>
-          <label style="width: 100px; display: inline-block;">Num2</label>
-          <input
-            id="Num2"
-            maxlength="11"
-            style="margin: 10px; width: 200px; height: 30px;"
-          />
-        </div>
-        <button
-          type="button"
-          style="margin-left: 150px; margin-top: 20px; width: 100px;"
-          onclick="POW()"
-        >
-          POW
-        </button>
-        <input
-          id="Result"
-          maxlength="11"
-          style="margin: 10px; width: 200px; height: 30px;"
-        />
+<head>
+    <title>Patternify</title>
+    <link rel="stylesheet" href="./style.css">
 
-        <button
-          type="button"
-          onclick="EXC()"
-          maxlength="11"
-          style="margin: 15px; width: 160px; height: 20px; color: #ff0000;"
-        >
-          Make an Exception!
-        </button>
-      </form>
-    </div>
-  </body>
+    <script>
+        function checkPattern(text, pattern, batchSize) {
+            const regexp = new RegExp(pattern, 'gi')
+            const allWords = text.split(' ')
+            const batches = []
+            let result = 0
+
+            while (allWords.length) {
+                batches.push(allWords.splice(0, batchSize))
+            }
+
+            batches.map(batch => result += batch.join(' ').match(regexp)?.length || 0)
+
+            return result
+        }
+
+        function search() {
+            let text = document.getElementById("text").value;
+            let pattern = document.getElementById("pattern").value;
+            let size = document.getElementById("size").value;
+
+            const occurrences = checkPattern(text, pattern, size)
+
+            let resultInput = document.getElementById("result");
+            resultInput.innerText = `"${pattern}" discovered ${occurrences} times in the text`;
+        }
+    </script>
+</head>
+<body>
+<div class="main">
+    <form>
+        <div class="container">
+            <label>Text</label>
+            <textarea id="text" placeholder="Copy your text here ..."></textarea>
+        </div>
+
+        <div class="container">
+            <label>Pattern</label>
+            <textarea id="pattern" placeholder="Copy your pattern here..."></textarea>
+        </div>
+
+        <div class="container">
+            <label>Size</label> <input id="size" type="number" />
+        </div>
+
+        <button type="button" onclick="search()">Search</button>
+    </form>
+
+    <h3 id="result"></h3>
+</div>
+</body>
 </html>
