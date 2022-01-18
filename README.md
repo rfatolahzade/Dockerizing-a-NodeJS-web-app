@@ -50,7 +50,7 @@ Here you go, a container named "mycontainer", exposed port "8080:8080" is there.
 If you take a look inside your container you can see your script directory as well:
 
 ```bash
-docker exec -it mycontainer /bin/bash
+docker exec -it mycontainer /bin/sh
 ```
 And then run :
 ```bash
