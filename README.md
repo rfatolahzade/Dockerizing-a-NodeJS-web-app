@@ -18,7 +18,7 @@ EXPOSE 8080
 CMD [ "node", "app.js" ]
 
 ```
-
+# Image
 Now build the container image using the docker build command:
 ```bash
 docker build . -t node-web-app
@@ -27,7 +27,11 @@ docker build . -t node-web-app
 This command used the Dockerfile to build a new container image. You might have noticed that a lot of “layers” were downloaded.
 This is because we instructed the builder that we wanted to start from the node:16 image.
 But, since we didn’t have that on our machine, that image needed to be downloaded.
-#### Start an app container
+List of your images:
+```bash
+docker images
+```
+# Container
 Now that we have an image, let’s run the application. To do so, we will use the docker run command.
 Start your container using the docker run command and specify the name of the image we just created:
 ```bash
@@ -50,7 +54,7 @@ ls
 ```
 After that run exit to exit from container.
 
-#### Test the app
+# Test the app
 Via terminal:
 ```bash
 curl -i localhost:8080
