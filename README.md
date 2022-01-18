@@ -4,12 +4,13 @@
 Take a look at Dockerfile:
 ```bash
 FROM node:fermium-alpine3.15
+
 WORKDIR /usr/src/app
 
 COPY script/package*.json ./
 
 RUN npm install
-RUN echo ready
+
 COPY script/ .
 
 EXPOSE 8080
@@ -23,11 +24,6 @@ Now build the container image using the docker build command:
 docker build . -t node-web-app
 
 ```
-Or use GitHub packages:
-```bash
-docker pull ghcr.io/rfinland/dockerizing-a-nodejs-web-app:main
-```
-
 This command used the Dockerfile to build a new container image. You might have noticed that a lot of “layers” were downloaded.
 This is because we instructed the builder that we wanted to start from the node:16 image.
 But, since we didn’t have that on our machine, that image needed to be downloaded.
@@ -36,10 +32,6 @@ Now that we have an image, let’s run the application. To do so, we will use th
 Start your container using the docker run command and specify the name of the image we just created:
 ```bash
 docker run --name=mycontainer -p 8080:8080 -d node-web-app 
-```
-If you pull from GitHub packages:
-```bash
-docker run --name=mycontainer -p 8080:8080 -d ghcr.io/rfinland/dockerizing-a-nodejs-web-app:main
 ```
 
 List of your containers:
