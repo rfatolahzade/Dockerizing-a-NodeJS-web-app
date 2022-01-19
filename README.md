@@ -48,10 +48,7 @@ If you take a look inside your container you can see your script directory as we
 ```bash
 docker exec -it mycontainer /bin/sh
 ```
-And then run :
-```bash
-ls 
-```
+
 After that run exit to exit from container.
 
 # Test the app
