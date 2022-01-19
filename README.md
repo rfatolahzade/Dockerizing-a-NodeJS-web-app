@@ -37,7 +37,7 @@ Start your container using the docker run command and specify the name of the im
 ```bash
 docker run --name=mycontainer -p 8080:8080 -d node-web-app 
 ```
-
+Inside the container you can see the content of the script folder as well.
 List of your containers:
 ```bash
 docker ps -a
