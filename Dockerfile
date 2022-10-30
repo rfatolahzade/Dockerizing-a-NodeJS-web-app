@@ -10,4 +10,7 @@ COPY script/ .
 
 EXPOSE 8080
 
+RUN chown -R node:node .
+USER node
+
 CMD [ "node", "app.js" ]
