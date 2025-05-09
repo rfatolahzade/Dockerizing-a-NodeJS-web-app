@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # Monitor npm dependencies (Node.js)
+  - package-ecosystem: "npm"
+    directory: "/"               # Root directory (where package.json is)
+    schedule:
+      interval: "weekly"        # Checks every Monday
+    labels:
+      - "dependencies"
+      - "javascript"
+    commit-message:
+      prefix: "chore(deps)"     # Conventional Commits style
+
+  # Monitor Dockerfile base images
+  - package-ecosystem: "docker"
+    directory: "/"               # Scans Dockerfile in root
+    schedule:
+      interval: "monthly"        # Less frequent (Docker images change slowly)
+    labels:
+      - "docker"
+      - "security"
+
+  # Update GitHub Actions (if workflows exist)
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "monthly"       # CI/CD stability over frequency
