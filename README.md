@@ -81,3 +81,11 @@ docker pull rfinland/node-web-app:latest
 docker pull registry.gitlab.com/rfatolahzade/dockerizing-a-nodejs-web-app/node-web-app:latest
 ```
 
+### 📦 Pull from Github Container Registry
+
+```bash
+docker pull ghcr.io/rfatolahzade/dockerizing-a-nodejs-web-app:main
+```
+
+
+
