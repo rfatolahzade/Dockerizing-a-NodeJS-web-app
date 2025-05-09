@@ -67,3 +67,17 @@ and then visit: http://localhost:8080/
 
 ![app](app.JPG)
 
+
+## Docker Images
+
+### 📦 Pull from Docker Hub
+```bash
+docker pull rfinland/node-web-app:latest
+````
+
+### 📦 Pull from GitLab Container Registry
+
+```bash
+docker pull registry.gitlab.com/rfatolahzade/dockerizing-a-nodejs-web-app/node-web-app:latest
+```
+
