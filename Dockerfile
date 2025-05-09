@@ -1,4 +1,4 @@
-FROM node:fermium-alpine3.15
+FROM node:18-alpine3.19
 
 WORKDIR /usr/src/app
 
