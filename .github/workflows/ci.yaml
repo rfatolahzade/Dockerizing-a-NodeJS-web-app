@@ -1,15 +1,16 @@
 name: Docker Build and Push
+
 on:
   push:
     branches: [ main ]
 
-env:
-  DOCKERHUB_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
-  IMAGE_NAME: ${{ env.IMAGE_NAME }}
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
+    env:
+      DOCKERHUB_USERNAME: rfinland
+      IMAGE_NAME: node-web-app
 
     steps:
       - name: Checkout source code
@@ -33,9 +34,6 @@ jobs:
             type=ref,event=branch
             type=ref,event=tag
             type=sha
-          labels: |
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
