@@ -1,0 +1,15 @@
+services:
+  app:
+#    build: .
+    image: rfinland/node-web-app:latest
+    container_name: nodejs_app
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+      - Maintainer=rfatolahzade
+    networks:
+      - nodejs_network
+    restart: always
