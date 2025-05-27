@@ -1,7 +1,7 @@
 services:
   app:
-#    build: .
-    image: rfinland/node-web-app:latest
+    build: .
+#    image: rfinland/node-web-app:latest
     container_name: nodejs_app
     ports:
       - "8080:8080"
@@ -13,3 +13,19 @@ services:
     networks:
       - nodejs_network
     restart: always
+
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json
+    networks:
+      - nodejs_network
+    restart: always
+    command: --interval 60
+
+networks:
+  nodejs_network:
+    driver: bridge
