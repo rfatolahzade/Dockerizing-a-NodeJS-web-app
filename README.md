@@ -3,23 +3,25 @@
 #### Build the app’s container image
 Take a look at Dockerfile:
 ```bash
-FROM node:18-alpine3.19
+services:
+  app:
+    build: .
+#    image: rfinland/node-web-app:latest
+    container_name: nodejs_app
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+      - Maintainer=rfatolahzade
+    networks:
+      - nodejs_network
+    restart: always
 
-WORKDIR /usr/src/app
-
-COPY script/package*.json ./
-
-RUN npm install
-
-COPY script/ .
-
-EXPOSE 8080
-
-RUN chown -R node:node .
-USER node
-
-CMD [ "node", "app.js" ]
-
+networks:
+  nodejs_network:
+    driver: bridge
 ```
 # Image
 Now build the container image using the docker build command:
@@ -67,6 +69,40 @@ and then visit: http://localhost:8080/
 
 ![app](app.JPG)
 
+#### MultiStage Dockerfile
+```bash
+#####Build stage
+FROM node:24.1.0-alpine3.21 AS build
+LABEL maintainer="rfatolahzade <https://github.com/rfatolahzade>" \
+      contributor="MJ <https://github.com/dashtaki>" \
+      repository="https://github.com/rfatolahzade/Dockerizing-a-NodeJS-web-app"
+
+WORKDIR /usr/src/app
+COPY script/package*.json ./
+
+RUN npm ci && npm cache clean --force
+
+COPY script/ .
+COPY test/ .
+RUN npm test
+#####Final stage
+FROM node:24.1.0-alpine3.21
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/package*.json ./
+
+RUN npm ci --omit=dev && npm cache clean --force && rm package-lock.json
+
+COPY --from=build /usr/src/app ./
+
+EXPOSE 8080
+
+RUN chown -R node:node /usr/src/app
+USER node
+
+CMD [ "node", "app.js" ]
+
+```
 
 ## Docker Images
 
