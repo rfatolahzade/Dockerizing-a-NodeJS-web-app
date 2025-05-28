@@ -11,7 +11,7 @@
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "debug": "4.3.4",
-    "express": "4.21.2",
+    "express": "5.1.0",
     "morgan": "1.9.1"
   },
   "devDependencies": {
