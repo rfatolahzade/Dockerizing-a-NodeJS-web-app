@@ -1,7 +1,7 @@
 services:
   app:
-#    build: .
-    image: rfinland/node-web-app:latest
+    build: .
+#    image: rfinland/node-web-app:latest
     container_name: nodejs_app
     ports:
       - "8080:8080"
@@ -13,3 +13,7 @@ services:
     networks:
       - nodejs_network
     restart: always
+
+networks:
+  nodejs_network:
+    driver: bridge
