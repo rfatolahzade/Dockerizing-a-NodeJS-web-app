@@ -1,5 +1,5 @@
 #####Build stage
-FROM node:24.1.0-alpine3.21 AS build
+FROM node:24.5.0-alpine3.21 AS build
 LABEL maintainer="rfatolahzade <https://github.com/rfatolahzade>" \
       contributor="MJ <https://github.com/dashtaki>" \
       repository="https://github.com/rfatolahzade/Dockerizing-a-NodeJS-web-app"
@@ -13,7 +13,7 @@ COPY script/ .
 COPY test/ .
 RUN npm test
 #####Final stage
-FROM node:24.1.0-alpine3.21
+FROM node:24.5.0-alpine3.21
 WORKDIR /usr/src/app
 
 COPY --from=build /usr/src/app/package*.json ./
