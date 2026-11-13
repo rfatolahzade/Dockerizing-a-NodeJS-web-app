@@ -2,7 +2,8 @@ name: Docker Build and Push
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, fix/security-image-hardening ]
+  workflow_dispatch:
 
 permissions:
   contents: read
