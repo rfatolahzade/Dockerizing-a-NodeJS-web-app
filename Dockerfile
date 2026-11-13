@@ -1,7 +1,7 @@
-FROM node:26.13.0-alpine AS base
+FROM node:22-alpine3.22 AS base
 
 # Apply available Alpine security updates during the image build.
-RUN apk update && apk upgrade --no-cache
+RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
 
 LABEL maintainer="rfatolahzade <https://github.com/rfatolahzade>" \
       contributor="MJ <https://github.com/dashtaki>" \
@@ -23,7 +23,7 @@ RUN npm test
 
 FROM base AS production-deps
 COPY --from=build /usr/src/app/package*.json ./
-RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+RUN npm ci --omit=dev --ignore-scripts --no-audit && npm cache clean --force
 
 FROM base AS runtime
 ENV NODE_ENV=production
