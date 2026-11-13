@@ -2,41 +2,7 @@ name: Docker Build and Push
 
 on:
   push:
-      # 1) Human-readable report: always prints the CVE table in the logs, never fails
-      - name: Report HIGH/CRITICAL vulnerabilities (table)
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          skip-setup-trivy: true
-          scan-type: image
-          image-ref: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
-          scanners: vuln
-          vuln-type: os,library
-          severity: HIGH,CRITICAL
-          ignore-unfixed: false
-          exit-code: '0'          # report only — never blocks
-          format: table
-
-      # 2) Gate: SARIF for the Security tab + fail only on FIXABLE HIGH/CRITICAL
-      - name: Scan Docker image for vulnerabilities (gate)
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          skip-setup-trivy: true
-          scan-type: image
-          image-ref: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
-          scanners: vuln
-          vuln-type: os,library
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true    # KEY CHANGE: block only when a fix exists
-          exit-code: '1'
-          format: sarif
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-          category: 'trivy-image-scan'    branches: [ main ]
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -59,16 +25,16 @@ jobs:
       - name: Set up Node.js (for lockfile generation)
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Use a stable LTS version for consistent lockfile generation
+          node-version: '22'
 
-      - name: Generate package-lock.json
+      - name: Generate package-lock.json (only if missing)
         run: |
-          cd script
-          # Generate lockfile without executing potentially malicious lifecycle scripts
-          npm install --package-lock-only --ignore-scripts
-          cd ..
+          if [ ! -f script/package-lock.json ]; then
+            cd script
+            npm install --package-lock-only --ignore-scripts
+          fi
 
-      - name: Upload generated lockfile as Artifact
+      - name: Upload lockfile as artifact
         uses: actions/upload-artifact@v4
         with:
           name: generated-package-lock-json
@@ -114,8 +80,11 @@ jobs:
           version: v0.76.2
           path: ${{ runner.temp }}/trivy
 
-      - name: Scan Docker image for vulnerabilities
+      # 1) Report: prints the CVE table in the logs, never fails
+      - name: Report HIGH/CRITICAL vulnerabilities (table)
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        env:
+          TRIVY_IMAGE_SRC: docker
         with:
           skip-setup-trivy: true
           scan-type: image
@@ -124,16 +93,32 @@ jobs:
           vuln-type: os,library
           severity: HIGH,CRITICAL
           ignore-unfixed: false
+          exit-code: '0'
+          format: table
+
+      # 2) Gate: SARIF for the Security tab, fails only on FIXABLE HIGH/CRITICAL
+      - name: Scan Docker image for vulnerabilities (gate)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        env:
+          TRIVY_IMAGE_SRC: docker
+        with:
+          skip-setup-trivy: true
+          scan-type: image
+          image-ref: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          scanners: vuln
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
           exit-code: '1'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          format: sarif
+          output: trivy-results.sarif
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: 'trivy-results.sarif'
-          category: 'trivy-image-scan'
+          sarif_file: trivy-results.sarif
+          category: trivy-image-scan
 
       - name: Login to Docker Hub
         uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
