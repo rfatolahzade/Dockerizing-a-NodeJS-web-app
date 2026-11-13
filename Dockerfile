@@ -1,4 +1,8 @@
 FROM node:26.13.0-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS base
+
+# PROACTIVE SECURITY: Force Alpine to fetch the latest patched OS packages
+RUN apk update && apk upgrade --no-cache
+
 LABEL maintainer="rfatolahzade <https://github.com/rfatolahzade>" \
       contributor="MJ <https://github.com/dashtaki>" \
       repository="https://github.com/rfatolahzade/Dockerizing-a-NodeJS-web-app"
@@ -6,9 +10,10 @@ LABEL maintainer="rfatolahzade <https://github.com/rfatolahzade>" \
 WORKDIR /usr/src/app
 
 FROM base AS build
-COPY script/package.json ./
-# SECURED: Prevents execution of lifecycle scripts during dependency installation
-RUN npm install --package-lock-only && npm ci --ignore-scripts
+# COPY both package.json and the newly generated package-lock.json
+COPY script/package*.json ./
+# npm ci is strict, fast, and uses the lockfile. --ignore-scripts maintains security.
+RUN npm ci --ignore-scripts
 
 COPY script/app.js ./
 COPY script/routes/ ./routes/
@@ -18,7 +23,6 @@ RUN npm test
 
 FROM base AS production-deps
 COPY --from=build /usr/src/app/package*.json ./
-# SECURED: Prevents execution of lifecycle scripts in production dependencies
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 FROM base AS runtime
