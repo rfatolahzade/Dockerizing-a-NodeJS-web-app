@@ -2,7 +2,41 @@ name: Docker Build and Push
 
 on:
   push:
-    branches: [ main ]
+      # 1) Human-readable report: always prints the CVE table in the logs, never fails
+      - name: Report HIGH/CRITICAL vulnerabilities (table)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          skip-setup-trivy: true
+          scan-type: image
+          image-ref: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          scanners: vuln
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: '0'          # report only — never blocks
+          format: table
+
+      # 2) Gate: SARIF for the Security tab + fail only on FIXABLE HIGH/CRITICAL
+      - name: Scan Docker image for vulnerabilities (gate)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          skip-setup-trivy: true
+          scan-type: image
+          image-ref: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          scanners: vuln
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true    # KEY CHANGE: block only when a fix exists
+          exit-code: '1'
+          format: sarif
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: 'trivy-image-scan'    branches: [ main ]
 
 permissions:
   contents: read
