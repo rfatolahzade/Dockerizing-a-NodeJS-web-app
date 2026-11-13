@@ -7,8 +7,8 @@ WORKDIR /usr/src/app
 
 FROM base AS build
 COPY script/package.json ./
-# Generate the updated lockfile inside the image; the repository lockfile is unchanged.
-RUN npm install --package-lock-only && npm ci
+# SECURED: Prevents execution of lifecycle scripts during dependency installation
+RUN npm install --package-lock-only && npm ci --ignore-scripts
 
 COPY script/app.js ./
 COPY script/routes/ ./routes/
@@ -18,7 +18,8 @@ RUN npm test
 
 FROM base AS production-deps
 COPY --from=build /usr/src/app/package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+# SECURED: Prevents execution of lifecycle scripts in production dependencies
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 FROM base AS runtime
 ENV NODE_ENV=production
