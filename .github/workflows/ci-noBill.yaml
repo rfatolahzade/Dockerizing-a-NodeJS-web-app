@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  security-events: write
 
 jobs:
   build-and-push:
@@ -20,6 +21,25 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      - name: Set up Node.js (for lockfile generation)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a stable LTS version for consistent lockfile generation
+
+      - name: Generate package-lock.json
+        run: |
+          cd script
+          # Generate lockfile without executing potentially malicious lifecycle scripts
+          npm install --package-lock-only --ignore-scripts
+          cd ..
+
+      - name: Upload generated lockfile as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-package-lock-json
+          path: script/package-lock.json
+          retention-days: 7
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -43,7 +63,6 @@ jobs:
             org.opencontainers.image.created={{date 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'}}
             org.opencontainers.image.version=sha-${{ github.sha }}
 
-      # Build once so the image published below is the image that passed scanning.
       - name: Build and load Docker image
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -71,13 +90,13 @@ jobs:
           vuln-type: os,library
           severity: HIGH,CRITICAL
           ignore-unfixed: false
-          exit-code: '1' # Fails the pipeline if HIGH/CRITICAL vulnerabilities are found
+          exit-code: '1'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always() # Ensures results are uploaded even if the scan fails the pipeline
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
         with:
           sarif_file: 'trivy-results.sarif'
           category: 'trivy-image-scan'
