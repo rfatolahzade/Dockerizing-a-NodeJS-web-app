@@ -1,7 +1,8 @@
 FROM node:26.13.0-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS base
 
-# PROACTIVE SECURITY: Force Alpine to fetch the latest patched OS packages
-RUN apk update && apk upgrade --no-cache
+# PROACTIVE SECURITY: Force Alpine to fetch the latest patched OS packages and
+# update npm, whose bundled undici was vulnerable in the pinned Node image.
+RUN apk update && apk upgrade --no-cache && npm install --global npm@latest
 
 LABEL maintainer="rfatolahzade <https://github.com/rfatolahzade>" \
       contributor="MJ <https://github.com/dashtaki>" \
