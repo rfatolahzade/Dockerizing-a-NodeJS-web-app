@@ -1,7 +1,7 @@
-FROM node:26.13.0-alpine AS base
+FROM node:22-alpine AS base
 
-# PROACTIVE SECURITY: Force Alpine to fetch the latest patched OS packages and
-# update npm, whose bundled undici was vulnerable in the pinned Node image.
+# Keep the OS and npm current on the supported Node LTS branch to reduce
+# avoidable CVEs in the runtime image.
 RUN apk update && apk upgrade --no-cache && npm install --global npm@latest
 
 LABEL maintainer="rfatolahzade <https://github.com/rfatolahzade>" \
