@@ -111,6 +111,7 @@ jobs:
           ignore-unfixed: true
           exit-code: '1'
           format: sarif
+          limit-severities-for-sarif: true
           output: trivy-results.sarif
 
       - name: Upload Trivy scan results to GitHub Security tab
