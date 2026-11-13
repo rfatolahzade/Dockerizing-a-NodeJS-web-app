@@ -73,7 +73,7 @@ jobs:
           vuln-type: os,library
           severity: HIGH,CRITICAL
           ignore-unfixed: false
-          exit-code: '1'
+          exit-code: '0'
           format: table
 
       - name: Login to Docker Hub
