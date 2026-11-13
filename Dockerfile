@@ -1,8 +1,7 @@
-FROM node:22-alpine AS base
+FROM node:26.13.0-alpine AS base
 
-# Keep the OS and npm current on the supported Node LTS branch to reduce
-# avoidable CVEs in the runtime image.
-RUN apk update && apk upgrade --no-cache && npm install --global npm@latest
+# Apply available Alpine security updates during the image build.
+RUN apk update && apk upgrade --no-cache
 
 LABEL maintainer="rfatolahzade <https://github.com/rfatolahzade>" \
       contributor="MJ <https://github.com/dashtaki>" \
@@ -33,6 +32,10 @@ COPY --from=production-deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/package.json /usr/src/app/app.js ./
 COPY --from=build /usr/src/app/routes ./routes
 COPY --from=build /usr/src/app/public ./public
+
+# npm is not needed to run the application. Remove its bundled dependency tree
+# from the final image to avoid shipping vulnerable npm-only packages.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 EXPOSE 8080
 
