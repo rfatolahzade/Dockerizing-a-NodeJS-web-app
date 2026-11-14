@@ -1,4 +1,4 @@
-FROM node:22-alpine3.22 AS base
+FROM node:22.23.5-alpine3.24 AS base
 
 # Apply available Alpine security updates during the image build.
 RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
